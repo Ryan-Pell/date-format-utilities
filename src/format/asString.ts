@@ -1,0 +1,30 @@
+import { regex, IDateTime } from "."
+
+const asString = (date: Date, mask: string) => {
+  return Object.entries(regex)
+    .map(([k, v]) => [k, v.exec(mask)]) //get values from mask and regex
+    .reduce((arr, [key, val]) => {
+      const k = key as keyof IDateTime<any>
+      const v = val as RegExpExecArray | null
+
+      if(v){
+        const s = v.index
+        const e = v.index + v[0].length
+
+        switch(k){
+          case "year": return arr.replace(regex.year, date.getFullYear().toString().slice(v[0].length*-1))
+          case "month": return arr.replace(regex.month, (date.getMonth() + 1).toString().padStart(v[0].length, '0'))
+          case "date": return arr.replace(regex.date, date.getDate().toString().padStart(v[0].length, '0'))
+          case "hour": return arr.replace(regex.hour, date.getHours().toString().padStart(v[0].length, '0'))
+          case "minute": return arr.replace(regex.minute, date.getMinutes().toString().padStart(v[0].length, '0'))
+          case "second": return arr.replace(regex.second, date.getSeconds().toString().padStart(v[0].length, '0'))
+          case "millisecond": return arr.replace(regex.millisecond, date.getMilliseconds().toString().padStart(v[0].length, '0'))
+        }
+
+      } else {
+        return arr        
+      }
+    }, mask)
+}
+
+export default asString
