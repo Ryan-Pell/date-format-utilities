@@ -1,8 +1,16 @@
-export function add(a: number, b: number): number {
-  return a + b;
+import { fromString, asString } from "./format"
+
+declare global {
+  interface DateConstructor {
+    fromString: (str: string, mask: string) => Date
+  }
+
+  interface Date {
+    asString: (mask: string) => String
+  }
 }
 
-console.log(add(3, 5)); //output: 8
+Date.fromString = fromString
+Date.prototype.asString = function(mask) { return asString(this, mask)}
 
-
-export { default as fromString } from './format/fromString'
+export { fromString as dateFromString, asString as dateAsString }
