@@ -3,7 +3,7 @@ import { regex, IDateTime } from "."
 const fromString = (str: string, mask: string) => {  
   console.log(str, mask)
 
-  const v = Object.entries(regex)
+  const formattedMask = Object.entries(regex)
     .map(([k, v]) => [k, v.exec(mask)]) //get values from mask and regex
     .reduce((arr, [key, value]) => {
       const k = key as keyof IDateTime<any>
@@ -11,20 +11,26 @@ const fromString = (str: string, mask: string) => {
 
       if(v){
         switch (k){
-          case "year": return arr.replace(regex.year, v[0] === '%Y' ? 'YYYY' : 'yy');
-          case "month": return arr.replace(regex.month, 'mm');
-          case "shortMonth": return arr.replace(regex.shortMonth, 'bbb');
+          case "year": return arr.replace(regex.year, '(\\d{2,4})');
+          case "month": return arr.replace(regex.month, '(\\d{2})');
+          case "shortMonth": return arr.replace(regex.shortMonth, '(.{3})');
           case "longMonth": return arr;
-          case "date": return arr.replace(regex.date, 'dd');
-          case "shortDay": return arr.replace(regex.shortDay, 'aaa');
+          case "date": return arr.replace(regex.date, '(\\d{2})');
+          case "shortDay": return arr.replace(regex.shortDay, '(.{3})');
           case "longDay": return arr;
-          case "hour": return arr.replace(regex.hour, 'HH');
-          case "minute": return arr.replace(regex.minute, 'MM');
-          case "second": return arr.replace(regex.second, 'SS');
-          case "millisecond": return arr.replace(regex.millisecond, 'fff');
+          case "hour": return arr.replace(regex.hour, '(\\d{2})');
+          case "minute": return arr.replace(regex.minute, '(\\d{2})');
+          case "second": return arr.replace(regex.second, '(\\d{2})');
+          case "millisecond": return arr.replace(regex.millisecond, '(\\d{3})');
         }        
       } else return arr
     }, mask)
+
+  
+  const reg = new RegExp(formattedMask.replace(/\s/g, "\\s"))
+  console.log(reg)
+  const matches = str.match(/(\d{2,4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2}).(\d{3})/)
+  console.log(matches)
 
   // const v = Object.entries(regex)
   //   .map(([k, v]) => [k, v.exec(mask)]) //get values from mask and regex
@@ -38,9 +44,6 @@ const fromString = (str: string, mask: string) => {
 
   //     return acc
   //   }, {}) as IDateTime<number>
-
-
-  console.log("Aft", v)
 
   return new Date()
   // return new Date(v.year, v.month - 1, v.date, v.hour, v.minute, v.second, v.millisecond)
