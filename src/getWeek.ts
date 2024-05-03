@@ -11,5 +11,4 @@ export default (date: Date, weekStartOnMonday: boolean = false) => {
     firstSunday.setDate(firstSunday.getDate() + 1)
   }
 
-  console.log(firstSunday)
 }

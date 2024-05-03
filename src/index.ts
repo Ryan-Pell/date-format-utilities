@@ -2,7 +2,7 @@ import { fromString, asString } from "./format"
 
 declare global {
   interface DateConstructor {
-    fromString: (str: string, mask: string) => Date
+    fromString: (str: string, mask: string) => Date | null
   }
 
   interface Date {
