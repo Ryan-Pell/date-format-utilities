@@ -1,0 +1,5 @@
+{
+  "explorer.fileNesting.patterns": {
+    "package.json": "package-lock.json, .gitignore, *.config.js, *.config.ts, tsconfig.json"
+  }
+}
